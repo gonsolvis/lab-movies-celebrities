@@ -1,6 +1,15 @@
+const router = require("express").Router();
 const Celebrity = require("../models/Celebrity.model");
 
-const router = require("express").Router();
+router.get("/", (req, res, next) => {
+  Celebrity.find()
+    .then((result) => {
+      res.render("celebrities/celebrities", {result: result})
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
 // iteration three
   router.get("/create", (req, res, next) => {
     res.render("celebrities/new-celebrity");
@@ -16,29 +25,8 @@ const router = require("express").Router();
     .then(result => {
         console.log("result:", result);
         // res.send(result);
-        res.render("celebrities")      
+        res.redirect("/celebrities")  
     })
     .catch(res.render("celebrities/new-celebrity"))
 })
-
-//iteration four
-
-
-router.get('/celebrities', (req, res, next) => {
-  Celebrity.find()
-    .then(results => {
-      // -> allTheBooksFromDB is a placeholder, it can be any word
-      console.log('Retrieved celebrities from DB:', results);
- 
-      // we call the render method after we obtain the books data from the database -> allTheBooksFromDB
-      res.render("celebrities/celebrities", { celebrities: results}); // pass `allTheBooksFromDB` to the view (as a variable books to be used in the HBS)
-    })
-    .catch(error => {
-      console.log('Error while getting the books from the DB: ', error);
- 
-      // Call the error-middleware to display the error page to the user
-      next(error);
-    });
-});
-
 module.exports = router;

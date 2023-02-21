@@ -7,11 +7,12 @@
 <input type="text" name="genre">
 <label for="plot">Plot</label>
 <input type="text" name="plot">
-<select name="select">
+<label for="cast">Cast</label>
+<select name="cast">
 {{#each result}}
   <option value={{_id}}>{{name}}</option>
 {{/each}}</select>
-<button type="submit"> Enter!</button>
+<button type="submit"> Add new movie!</button>
 </form>
 
 

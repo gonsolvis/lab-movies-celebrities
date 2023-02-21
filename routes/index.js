@@ -6,10 +6,10 @@ router.get("/", (req, res, next) => {
 });
 
 let celebrityRoutes = require("./celebrities.routes")
-router.unsubscribe("/celebrities",celebrityRoutes )
+router.use("/celebrities",celebrityRoutes )
 
 let filmRoutes = require("./celebrities.routes")
-router.unsubscribe("/movies",filmRoutes )
+router.use("/movies",filmRoutes )
 
 
 module.exports = router;

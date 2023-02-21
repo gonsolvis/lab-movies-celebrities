@@ -3,47 +3,86 @@ const Celebrity = require("../models/Celebrity.model");
 const router = require("express").Router();
 // iteration three
 
-router.get("/movies/create", (req,res,next)=>{
-  Celebrity.find()
-  .then((data)=>{
-      res.render("movies/new-movie", {celebs: data})
-  })
-  .catch((err)=>{
-      console.log(err)
-  })
+
+
+router.get("/", (req, res, next) => {
+  Movie.find()
+      .then(result => {
+          res.render("movies/movies", { result })
+      })
+      .catch(err => next(err))
+
 })
 
-   
+router.get("/create", (req, res, next) => {
+  Celebrity.find()
+    .then(result => {
+      res.render("movies/new-movie", { result })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
 
-  router.post("/create", (req, res, next) => {
-    const { title, genre, plot, cast } = req.body
-    Movie.create({ title, genre, resultplot, cast })
+
+
+
+router.post("/create", (req, res, next) => {
+  const { title, genre, plot, cast } = req.body
+  Movie.create({ title, genre, plot, cast })
+    .then(result => {
+      console.log("result:", result);
+      // res.send(result);
+      res.redirect("/movies")
+    })
+    .catch(res.render("movies/new-movie"))
+})
+
+
+router.get("/:id", (req, res, next) => {
+  const movieID = req.params.id
+  Movie.findById(movieID)
+    .populate("cast")
+    .then(result => {
+      res.render("movies/movie-details", { result })
+    })
+    .catch(err => next(err))
+})
+
+router.post("/:id/delete", (req, res, next) => {
+  const movieID = req.params.id
+  Movie.findByIdAndRemove(movieID)
+    .then(result => {
+      res.redirect("/movies")
+    })
+    .catch(err => next(err))
+})
+
+router.get("/:id/edit", (req, res, next) => {
+  const movieID = req.params.id
+  Movie.findById(movieID)
+    .then(result => {
+      const film = result
+      Celebrity.find()
+        .then(result => {
+          const actors = result
+          res.render("movies/edit-movie", { film, actors })
+        })
+
+    })
+    .catch(err => next(err))
+})
+
+
+router.post("/:id/edit", (req, res, next) => {
+  const { title, genre, plot, cast } = req.body
+  const movieID = req.params.id
+  Movie.findByIdAndUpdate(movieID, { title, genre, plot, cast })
       .then(result => {
-        console.log("result:", result);
-        // res.send(result);
-        res.render("/movies") 
+         res.redirect(`/movies/${movieID}`)
       })
-      .catch(res.render("movies/new-movie"))
-  })
+      .catch(err => next(err))
 
-  //iteration four
+})
 
-
-  // router.get('/celebrities', (req, res, next) => {
-  //   Celebrity.find()
-  //     .then(results => {
-  //       // -> allTheBooksFromDB is a placeholder, it can be any word
-  //       console.log('Retrieved celebrities from DB:', results);
-
-  //       // we call the render method after we obtain the books data from the database -> allTheBooksFromDB
-  //       res.render("celebrities/celebrities", { celebrities: results}); // pass `allTheBooksFromDB` to the view (as a variable books to be used in the HBS)
-  //     })
-  //     .catch(error => {
-  //       console.log('Error while getting the books from the DB: ', error);
-
-  //       // Call the error-middleware to display the error page to the user
-  //       next(error);
-  //     });
-  // });
-
-  module.exports = router;
+module.exports = router;

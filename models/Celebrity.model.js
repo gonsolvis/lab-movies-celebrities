@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 const celebritySchema = new Schema({
     name: {
         type: String,
-        required: true,
+       
 
     },
     occupation: {
@@ -15,7 +15,7 @@ const celebritySchema = new Schema({
     },
     catchPhrase: {
         type: String,
-        required: true
+       
     },
 
 });
